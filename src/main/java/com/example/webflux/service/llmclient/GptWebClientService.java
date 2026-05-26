@@ -31,15 +31,13 @@ public class GptWebClientService implements LlmWebClientService {
                 .header("Authorization", "Bearer " + gptApiKey)
                 .bodyValue(gptChatRequestDto)
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, (clientResponse -> {
-                    return clientResponse.bodyToMono(String.class).flatMap(body -> {
-                        log.error("Error Response: {}" , body);
-                        return Mono.error(new RuntimeException("API 요청 실패: " + body));
-                    });
-                }))
+                .onStatus(HttpStatusCode::is4xxClientError, (clientResponse ->
+                        clientResponse.bodyToMono(String.class).flatMap(body -> {
+                            log.error("Error Response: {}", body);
+                            return Mono.error(new RuntimeException("API 요청 실패: " + body));
+                        })))
                 .bodyToMono(GptChatResponseDto.class)
-                .map(LlmChatResponseDto::new)
-                ;
+                .map(LlmChatResponseDto::new);
     }
 
     @Override

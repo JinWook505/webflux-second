@@ -20,9 +20,13 @@ public class UserChatServiceImpl implements UserChatService {
 
     @Override
     public Mono<UserChatResponseDto> getOneShotChat(UserChatRequestDto userChatRequestDto) {
-        LlmChatRequestDto llmChatRequestDto = new LlmChatRequestDto(userChatRequestDto, "요청에 적절히 응답해주세요.");
-        Mono<LlmChatResponseDto> chatCompletionMono = llmWebClientServiceMap.get(userChatRequestDto.getLlmModel().getLlmType())
-                .getChatCompletion(llmChatRequestDto);
+        LlmChatRequestDto llmChatRequestDto =
+                new LlmChatRequestDto(userChatRequestDto, "요청에 적절히 응답해주세요.");
+
+        Mono<LlmChatResponseDto> chatCompletionMono =
+                llmWebClientServiceMap.get(userChatRequestDto.getLlmModel().getLlmType())
+                        .getChatCompletion(llmChatRequestDto);
+
         return chatCompletionMono.map(UserChatResponseDto::new);
     }
 }

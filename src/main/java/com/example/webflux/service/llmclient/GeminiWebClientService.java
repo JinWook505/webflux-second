@@ -31,12 +31,11 @@ public class GeminiWebClientService implements LlmWebClientService {
                 .uri("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey)
                 .bodyValue(geminiChatRequestDto)
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, (clientResponse -> {
-                    return clientResponse.bodyToMono(String.class).flatMap(body -> {
-                        log.error("Error Response: {}" , body);
-                        return Mono.error(new RuntimeException("API 요청 실패: " + body));
-                    });
-                }))
+                .onStatus(HttpStatusCode::is4xxClientError, (clientResponse ->
+                        clientResponse.bodyToMono(String.class).flatMap(body -> {
+                            log.error("Error Response: {}", body);
+                            return Mono.error(new RuntimeException("API 요청 실패: " + body));
+                        })))
                 .bodyToMono(GeminiChatResponseDto.class)
                 .map(LlmChatResponseDto::new);
     }

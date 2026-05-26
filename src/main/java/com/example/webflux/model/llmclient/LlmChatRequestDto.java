@@ -17,11 +17,9 @@ public class LlmChatRequestDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 5009353172145761069L;
 
-    private String userRequest;
-    /*
-    systemPrompt가 userRequest에 포함되는 내용보다 더 높은 강제성과 우선순위를 가집니다.
-     */
+    // systemPrompt가 userRequest에 포함되는 내용보다 더 높은 강제성과 우선순위를 가집니다.
     private String systemPrompt;
+    private String userRequest;
     private boolean useJson;
     private LlmModel llmModel;
 

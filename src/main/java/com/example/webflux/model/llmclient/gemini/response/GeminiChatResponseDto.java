@@ -22,7 +22,7 @@ public class GeminiChatResponseDto implements Serializable {
     public String getSingleText() {
         return candidates.stream().findFirst()
                 .flatMap(candidate -> candidate.getContent().getParts().stream().findFirst()
-                        .map(part -> part.getText()))
+                        .map(GeminiPart::getText))
                 .orElseThrow();
     }
 }
