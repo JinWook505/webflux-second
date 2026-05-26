@@ -8,7 +8,8 @@ import lombok.Getter;
 @Getter
 public enum LlmModel {
     GPT_4O("gpt-4o", LlmType.GPT),
-    GEMINI_2_0_FLASH("gemini-2.0-flash", LlmType.GEMINI)
+    GPT_5_NANO("gpt-5-nano", LlmType.GPT),
+    GEMINI_3_1_FLASH("gemini-3.1-flash-lite", LlmType.GEMINI)
     ;
 
     private final String code;

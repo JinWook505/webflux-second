@@ -28,7 +28,7 @@ public class GeminiWebClientService implements LlmWebClientService {
     public Mono<LlmChatResponseDto> getChatCompletion(LlmChatRequestDto requestDto) {
         GeminiChatRequestDto geminiChatRequestDto = new GeminiChatRequestDto(requestDto);
         return webClient.post()
-                .uri("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey)
+                .uri("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=" + geminiApiKey)
                 .bodyValue(geminiChatRequestDto)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (clientResponse ->

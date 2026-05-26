@@ -26,6 +26,7 @@ public class GptWebClientService implements LlmWebClientService {
     @Override
     public Mono<LlmChatResponseDto> getChatCompletion(LlmChatRequestDto requestDto) {
         GptChatRequestDto gptChatRequestDto = new GptChatRequestDto(requestDto);
+
         return webClient.post()
                 .uri("https://api.openai.com/v1/chat/completions")
                 .header("Authorization", "Bearer " + gptApiKey)
