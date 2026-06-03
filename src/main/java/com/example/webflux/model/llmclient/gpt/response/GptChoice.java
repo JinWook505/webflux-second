@@ -16,6 +16,7 @@ public class GptChoice implements Serializable {
     @Serial
     private static final long serialVersionUID = -2708972457378829110L;
 
-    private String finishReason;
+    private String finish_reason;
     private GptResponseMessageDto message;
+    private GptResponseMessageDto delta;
 }

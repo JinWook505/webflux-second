@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -19,7 +20,11 @@ public class UserChatController {
 
     @PostMapping("/oneshot")
     public Mono<UserChatResponseDto> oneShotChat(@RequestBody UserChatRequestDto userChatRequestDto) {
-        //서비스에서 request가공해서 response돌려줘야함.
         return userChatService.getOneShotChat(userChatRequestDto);
+    }
+
+    @PostMapping("/oneshot/stream")
+    public Flux<UserChatResponseDto> oneShotChatStream(@RequestBody UserChatRequestDto userChatRequestDto) {
+        return userChatService.getOneShotChatStream(userChatRequestDto);
     }
 }

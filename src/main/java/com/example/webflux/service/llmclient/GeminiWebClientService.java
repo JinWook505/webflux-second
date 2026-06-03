@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
@@ -37,6 +38,22 @@ public class GeminiWebClientService implements LlmWebClientService {
                             return Mono.error(new RuntimeException("API 요청 실패: " + body));
                         })))
                 .bodyToMono(GeminiChatResponseDto.class)
+                .map(LlmChatResponseDto::new);
+    }
+
+    @Override
+    public Flux<LlmChatResponseDto> getChatCompletionStream(LlmChatRequestDto requestDto) {
+        GeminiChatRequestDto geminiChatRequestDto = new GeminiChatRequestDto(requestDto);
+        return webClient.post()
+                .uri("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:streamGenerateContent?key=" + geminiApiKey)
+                .bodyValue(geminiChatRequestDto)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (clientResponse ->
+                        clientResponse.bodyToMono(String.class).flatMap(body -> {
+                            log.error("Error Response: {}", body);
+                            return Mono.error(new RuntimeException("API 요청 실패: " + body));
+                        })))
+                .bodyToFlux(GeminiChatResponseDto.class)
                 .map(LlmChatResponseDto::new);
     }
 
