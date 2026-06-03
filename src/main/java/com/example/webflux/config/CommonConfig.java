@@ -15,6 +15,7 @@ public class CommonConfig {
 
     @Bean
     public Map<LlmType, LlmWebClientService> getLlmWebClientServiceMap(List<LlmWebClientService> llmWebClientServiceList) {
-        return llmWebClientServiceList.stream().collect(Collectors.toMap(LlmWebClientService::getLlmType, Function.identity()));
+        return llmWebClientServiceList.stream()
+                .collect(Collectors.toMap(LlmWebClientService::getLlmType, Function.identity()));
     }
 }
