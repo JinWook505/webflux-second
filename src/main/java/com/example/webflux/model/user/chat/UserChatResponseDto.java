@@ -19,10 +19,18 @@ public class UserChatResponseDto implements Serializable {
     private static final long serialVersionUID = -2479640483541743119L;
 
     private String response;
+
+    public UserChatResponseDto(String response, String title) {
+        this.response = response;
+        this.title = title;
+    }
+
+    private String title;
     private CommonError error;
 
     public UserChatResponseDto(LlmChatResponseDto llmChatResponseDto) {
         this.response = llmChatResponseDto.getLlmResponse();
+        this.title = llmChatResponseDto.getTitle();
         this.error = llmChatResponseDto.getError();
     }
 }

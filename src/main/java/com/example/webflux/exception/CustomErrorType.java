@@ -9,6 +9,7 @@ public enum CustomErrorType {
 
     GEMINI_RESPONSE_ERROR(1),
     GPT_RESPONSE_ERROR(2),
+    LLM_RESPONSE_JSON_PARSE_ERROR(3),
 
     ;
 

@@ -30,6 +30,6 @@ public class GeminiChatRequestDto implements Serializable {
             this.generationConfig = new GeminiGenerationConfigDto();
         }
         this.contents = List.of(new GeminiContent(List.of(new GeminiPart(llmChatRequestDto.getUserRequest())), GeminiMessageRole.USER));
-        this.systemInstruction = new GeminiContent(List.of(new GeminiPart(llmChatRequestDto.getUserRequest())));
+        this.systemInstruction = new GeminiContent(List.of(new GeminiPart(llmChatRequestDto.getSystemPrompt())));
     }
 }

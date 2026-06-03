@@ -28,12 +28,12 @@ public interface LlmWebClientService {
                         CommonError error =
                                 new CommonError(ex.getErrorType().getCode(), ex.getMessage());
 
-                        return Mono.just(new LlmChatResponseDto(error));
+                        return Mono.just(new LlmChatResponseDto(error, ex));
                     } else {
                         CommonError error =
                                 new CommonError(500, exception.getMessage());
 
-                        return Mono.just(new LlmChatResponseDto(error));
+                        return Mono.just(new LlmChatResponseDto(error, exception));
                     }
                 });
     }
