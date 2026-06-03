@@ -1,5 +1,8 @@
 package com.example.webflux.service.llmclient;
 
+import com.example.webflux.exception.CommonError;
+import com.example.webflux.exception.CustomErrorType;
+import com.example.webflux.exception.ErrorTypeException;
 import com.example.webflux.model.llmclient.LlmChatRequestDto;
 import com.example.webflux.model.llmclient.LlmChatResponseDto;
 import com.example.webflux.model.llmclient.LlmType;
@@ -14,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -35,7 +40,7 @@ public class GeminiWebClientService implements LlmWebClientService {
                 .onStatus(HttpStatusCode::is4xxClientError, (clientResponse ->
                         clientResponse.bodyToMono(String.class).flatMap(body -> {
                             log.error("Error Response: {}", body);
-                            return Mono.error(new RuntimeException("API 요청 실패: " + body));
+                            return Mono.error(new ErrorTypeException("API 요청 실패: " + body, CustomErrorType.GEMINI_RESPONSE_ERROR));
                         })))
                 .bodyToMono(GeminiChatResponseDto.class)
                 .map(LlmChatResponseDto::new);
@@ -44,6 +49,8 @@ public class GeminiWebClientService implements LlmWebClientService {
     @Override
     public Flux<LlmChatResponseDto> getChatCompletionStream(LlmChatRequestDto requestDto) {
         GeminiChatRequestDto geminiChatRequestDto = new GeminiChatRequestDto(requestDto);
+        AtomicInteger counter = new AtomicInteger(0);
+
         return webClient.post()
                 .uri("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:streamGenerateContent?key=" + geminiApiKey)
                 .bodyValue(geminiChatRequestDto)
@@ -51,7 +58,7 @@ public class GeminiWebClientService implements LlmWebClientService {
                 .onStatus(HttpStatusCode::is4xxClientError, (clientResponse ->
                         clientResponse.bodyToMono(String.class).flatMap(body -> {
                             log.error("Error Response: {}", body);
-                            return Mono.error(new RuntimeException("API 요청 실패: " + body));
+                            return Mono.error(new ErrorTypeException("API 요청 실패: " + body, CustomErrorType.GEMINI_RESPONSE_ERROR));
                         })))
                 .bodyToFlux(GeminiChatResponseDto.class)
                 .map(LlmChatResponseDto::new);

@@ -1,5 +1,7 @@
 package com.example.webflux.service.llmclient;
 
+import com.example.webflux.exception.CommonError;
+import com.example.webflux.exception.ErrorTypeException;
 import com.example.webflux.model.llmclient.LlmChatRequestDto;
 import com.example.webflux.model.llmclient.LlmChatResponseDto;
 import com.example.webflux.model.llmclient.LlmType;
@@ -18,6 +20,23 @@ import reactor.core.publisher.Mono;
  */
 public interface LlmWebClientService {
     Mono<LlmChatResponseDto> getChatCompletion(LlmChatRequestDto requestDto);
+
+    default Mono<LlmChatResponseDto> getCharCompletionWithCatchException(LlmChatRequestDto requestDto) {
+        return getChatCompletion(requestDto)
+                .onErrorResume(exception -> {
+                    if (exception instanceof ErrorTypeException ex) {
+                        CommonError error =
+                                new CommonError(ex.getErrorType().getCode(), ex.getMessage());
+
+                        return Mono.just(new LlmChatResponseDto(error));
+                    } else {
+                        CommonError error =
+                                new CommonError(500, exception.getMessage());
+
+                        return Mono.just(new LlmChatResponseDto(error));
+                    }
+                });
+    }
 
     LlmType getLlmType();
 
